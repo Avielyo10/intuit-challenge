@@ -160,11 +160,9 @@ class Case:
 
     def play_odd(self):
         # Special case when there is no cross [1X1] so we don't need
-        # to make any calculation sine there are only 3 situations
+        # to make any calculation since there are only 3 situations
         if self.n_grid == 1:
-            if self.boxes_points["N,N"] == 1:
-                return -1
-            elif self.hunters_points["N,N"] == 1:
+            if self.boxes_points["N,N"] == 1 or self.hunters_points["N,N"] == 1:
                 return 0
             else:
                 return 1
