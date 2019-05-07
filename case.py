@@ -129,12 +129,19 @@ class Case:
         return int(self.n_grid) ** 2
 
     def play_even(self):
-        q_area = (self.n_grid / 2) ** 2
         n_all_hunters = sum(list(self.hunters_points.values()))
+        n_all_boxes = sum(list(self.boxes_points.values()))
 
-        if sum(list(self.boxes_points.values())) == 0:
+        # If there are no boxes, fill it all with hunters
+        if n_all_boxes == 0:
             return self.get_grid_area() - n_all_hunters
 
+        # If all the carpet is full of boxes,
+        # so its already balanced and we can't add anymore hunters
+        if n_all_boxes == self.get_grid_area():
+            return 0
+
+        q_area = (self.n_grid / 2) ** 2
         if q_area == self.boxes_points[1] == self.boxes_points[2] or \
                 q_area == self.boxes_points[1] == self.boxes_points[3] or \
                 q_area == self.boxes_points[4] == self.boxes_points[3] or \
@@ -163,10 +170,6 @@ class Case:
                 return 1
 
         # But if it's larger ..
-        q_cross_size = self.n_grid/2
-        q_size = q_cross_size ** 2
-        half_size = 2 * q_size + q_cross_size
-
         n_all_hunters = sum(list(self.hunters_points.values()))
         n_all_boxes = sum(list(self.boxes_points.values()))
 
@@ -174,10 +177,23 @@ class Case:
         if n_all_boxes == 0:
             return self.get_grid_area() - n_all_hunters
 
-        n_boxes_up = self.boxes_points["L,U"] + self.boxes_points["N,U"] + self.boxes_points["R,U"]
-        n_boxes_down = self.boxes_points["L,D"] + self.boxes_points["N,D"] + self.boxes_points["R,D"]
-        n_boxes_left = self.boxes_points["L,U"] + self.boxes_points["L,N"] + self.boxes_points["L,D"]
-        n_boxes_right = self.boxes_points["R,U"] + self.boxes_points["R,N"] + self.boxes_points["R,D"]
+        # If all the carpet is full of boxes,
+        # so its already balanced and we can't add anymore hunters
+        if n_all_boxes == self.get_grid_area():
+            return 0
+        
+        q_cross_size = self.n_grid/2
+        q_size = q_cross_size ** 2
+        half_size = 2 * q_size + q_cross_size
+
+        n_boxes_up = self.boxes_points["L,U"] + \
+            self.boxes_points["N,U"] + self.boxes_points["R,U"]
+        n_boxes_down = self.boxes_points["L,D"] + \
+            self.boxes_points["N,D"] + self.boxes_points["R,D"]
+        n_boxes_left = self.boxes_points["L,U"] + \
+            self.boxes_points["L,N"] + self.boxes_points["L,D"]
+        n_boxes_right = self.boxes_points["R,U"] + \
+            self.boxes_points["R,N"] + self.boxes_points["R,D"]
 
         # If some half of the carpet is full of boxes it's not a valid situation
         if n_boxes_up == half_size or \
@@ -190,7 +206,7 @@ class Case:
         if diff == "0,0":
             return self.get_grid_area() - n_all_boxes - n_all_hunters
 
-        # So it's diff isn't 0,0 [which means unstable] and the carpet is already
+        # So its diff isn't 0,0 [which means unstable] and the carpet is already
         # full ==> not valid
         elif self.get_grid_area() == (n_all_hunters + n_all_boxes):
             return -1
@@ -206,7 +222,8 @@ class Case:
                 tmp_area = q_size
                 if "N" in i:
                     tmp_area = q_cross_size
-                dict_data[i] = how_much_place_is_left(tmp_area, self.boxes_points[i], self.hunters_points[i])
+                dict_data[i] = how_much_place_is_left(
+                    tmp_area, self.boxes_points[i], self.hunters_points[i])
 
             # If we don't have enough space even for the best case, return -1
             if sum(list(dict_data.values())) < best_case:
@@ -215,7 +232,8 @@ class Case:
             all_possible_dicts = get_possible_dict(data[0], data[1], data[2])
 
             for possible_dict in all_possible_dicts:
-                tmp = {key: dict_data[key] - possible_dict.get(key, 0) for key in dict_data.keys()}
+                tmp = {
+                    key: dict_data[key] - possible_dict.get(key, 0) for key in dict_data.keys()}
                 if all(value >= 0 for value in tmp.values()):
                     return self.get_grid_area() - n_all_boxes - n_all_hunters - sum(list(possible_dict.values()))
 
