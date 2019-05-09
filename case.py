@@ -142,11 +142,6 @@ class Case:
             return 0
 
         q_area = (self.n_grid / 2) ** 2
-        if q_area == self.boxes_points[1] == self.boxes_points[2] or \
-                q_area == self.boxes_points[1] == self.boxes_points[3] or \
-                q_area == self.boxes_points[4] == self.boxes_points[3] or \
-                q_area == self.boxes_points[4] == self.boxes_points[2]:
-            return -1
 
         a = diff_even(
             q_area, self.hunters_points[1], self.boxes_points[1], self.hunters_points[4], self.boxes_points[4])
@@ -182,7 +177,7 @@ class Case:
         
         q_cross_size = self.n_grid/2
         q_size = q_cross_size ** 2
-        half_size = 2 * q_size + q_cross_size
+        half_size = 2 * q_size + 3* q_cross_size + 1
 
         n_boxes_up = self.boxes_points["L,U"] + \
             self.boxes_points["N,U"] + self.boxes_points["R,U"]
@@ -193,11 +188,13 @@ class Case:
         n_boxes_right = self.boxes_points["R,U"] + \
             self.boxes_points["R,N"] + self.boxes_points["R,D"]
 
+        n_row_cross = self.boxes_points["N,N"] + self.boxes_points["L,N"] + self.boxes_points["R,N"]
+        n_column_cross = self.boxes_points["N,N"] + self.boxes_points["N,U"] + self.boxes_points["N,D"]
         # If some half of the carpet is full of boxes it's not a valid situation
-        if n_boxes_up == half_size or \
-                n_boxes_down == half_size or \
-                n_boxes_left == half_size or \
-                n_boxes_right == half_size:
+        if n_boxes_up + n_row_cross == half_size or \
+                n_boxes_down + n_row_cross == half_size or \
+                n_boxes_left + n_column_cross == half_size or \
+                n_boxes_right + n_column_cross == half_size:
             return -1
 
         diff = diff_odd(n_boxes_up, n_boxes_down, n_boxes_left, n_boxes_right)
