@@ -142,10 +142,10 @@ class Case:
             return 0
 
         q_area = (self.n_grid / 2) ** 2
-        if ((q_area == self.boxes_points[1]) and (q_area == self.boxes_points[2])) or \
-            ((q_area == self.boxes_points[1]) and (q_area == self.boxes_points[3])) or \
-            ((q_area == self.boxes_points[4]) and (q_area == self.boxes_points[3])) or \
-            ((q_area == self.boxes_points[4]) and (q_area == self.boxes_points[2])):
+        if q_area == self.boxes_points[1] == self.boxes_points[2] or \
+            q_area == self.boxes_points[1] == self.boxes_points[3] or \
+            q_area == self.boxes_points[4] == self.boxes_points[3] or \
+            q_area == self.boxes_points[4] == self.boxes_points[2]:
             return -1
 
         a = diff_even(
